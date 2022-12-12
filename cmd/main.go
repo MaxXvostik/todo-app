@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 	"github.com/maXvostik/todo-app"
@@ -23,11 +24,10 @@ func main() {
 	}
 
 	db, err := repositori.NewPostgresDB(repositori.Config{
-
 		Username: viper.GetString("db.username"),
-		Password: viper.GetString("db.password"),
 		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("DB_PASSWORD"),
+		SSLMode:  viper.GetString("db.sslmode"),
+		Password: os.Getenv("DB_PASSWORD"),
 	})
 
 	if err != nil {
