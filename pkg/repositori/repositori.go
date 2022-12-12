@@ -1,5 +1,7 @@
 package repositori
 
+import "database/sql"
+
 type Authorization interface {
 }
 
@@ -15,6 +17,6 @@ type Repositori struct {
 	TodoItem
 }
 
-func NewRepositori() *Repositori {
+func NewRepositori(db *sql.DB) *Repositori {
 	return &Repositori{}
 }

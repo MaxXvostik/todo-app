@@ -1,0 +1,8 @@
+port: "8080"
+
+
+db:
+ username: "postgres"
+ password: "123456"
+ dbname:   "todo_app"
+ sslmode:  "disable"

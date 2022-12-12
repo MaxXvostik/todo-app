@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 
+	_ "github.com/lib/pq"
 	"github.com/maXvostik/todo-app"
 	"github.com/maXvostik/todo-app/pkg/handler"
 	"github.com/maXvostik/todo-app/pkg/repositori"
 	"github.com/maXvostik/todo-app/pkg/service"
 	"github.com/spf13/viper"
+	"github.com/subosito/gotenv"
 )
 
 func main() {
@@ -16,8 +18,24 @@ func main() {
 		log.Fatalf("error initilizing configs: %s", err.Error())
 	}
 
-	repos := repositori.NewRepositori()
-	services := service.NewService(*repos)
+	if err := gotenv.Load(); err != nil {
+		log.Fatalf("error loading env variabls: %s", err.Error())
+	}
+
+	db, err := repositori.NewPostgresDB(repositori.Config{
+
+		Username: viper.GetString("db.username"),
+		Password: viper.GetString("db.password"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("DB_PASSWORD"),
+	})
+
+	if err != nil {
+		log.Fatalf("failed to initialized db: %s", err.Error())
+	}
+
+	repos := repositori.NewRepositori(db)
+	services := service.NewService(repos)
 	handler := handler.NewHandler(services)
 
 	srv := new(todo.Server)
